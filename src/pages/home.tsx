@@ -75,9 +75,10 @@ export const Home: VFC<{ onSearch: (query: string) => void, onStationSelected: (
         }
         const contentType = response.headers[Object.keys(response.headers).find(key => key.toLowerCase() === 'content-type') ?? ''];
         const icyName = response.headers[Object.keys(response.headers).find(key => key.toLowerCase() === 'icy-name') ?? ''];
-        if (contentType !== 'audio/mpeg') {
-            const desc = `Got "content-type: ${contentType}"`;
-            showModal(<AlertModal title="URL must point to an MP3 stream" description={desc} />)
+        const supportedFormats = ['audio/mpeg', 'audio/aac', 'audio/x-aac', 'audio/aacp', 'audio/aacp'];
+        if (!supportedFormats.includes(contentType)) {
+            const desc = `Got "content-type: ${contentType}". Supported formats: MP3, AAC`;
+            showModal(<AlertModal title="URL must point to an audio stream" description={desc} />)
         }
         else if (!icyName) {
             const desc = `I'm not sure if this is a good way to tell if this is a station, if you feel this is a mistake please file a bug on GitHub.`
